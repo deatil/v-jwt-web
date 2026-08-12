@@ -1,6 +1,6 @@
 ## v-jwt-web
 
-V-jwt web test
+A v-jwt middleware web.
 
 
 ### Env
@@ -10,7 +10,7 @@ V-jwt web test
 
 ### Dependency
 
- - khalyomede.mantis
+ - tuntii.viltrum
  - deatil.vjwt
 
 
@@ -22,16 +22,16 @@ v run .
 
 ### Request
 
-create token:
+request login:
 
-```bash
-curl -X POST -d "name=jwt&pass=123" 127.0.0.1:9000/login
+```sh
+curl -X POST -H "Content-Type: application/json" -d '{"name":"jwt","pass":"123"}' 127.0.0.1:9000/login
 ```
 
-get token user id:
+get user id from:
 
-```bash
-curl -X POST -d "token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJleGFtcGxlLmNvbSIsImV4cCI6MTc4OTEwNjgzNCwiaWF0IjoxNzg2NTE0ODM0LCJ1aWQiOiJqd3QifQ.bFIT_vp0RRwYW_wjRTlwBXymHF8KCebVWM1xaqGJomk" 127.0.0.1:9000/user/profile
+```sh
+curl -X POST -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJleGFtcGxlLmNvbSIsImV4cCI6MTc4OTEzNzI5NiwiaWF0IjoxNzg2NTQ1Mjk2LCJ1aWQiOiJqd3QifQ.0aRoPqvqacmsabjHnkuKQdKjcAfXhvHu3DRa8ypz8Jo" 127.0.0.1:9000/user/profile
 ```
 
 
