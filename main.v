@@ -29,24 +29,27 @@ fn main() {
 	// > curl -X POST -H "Content-Type: application/json" -d '{"name":"jwt","pass":"123"}' 127.0.0.1:9000/login
 	app.post('/login', fn (req Request) Response {
 		name := req.json_string('name') or { 
-			return json(200, '{"error":"name is required"}')
+			return return_error(1, "name is required")
 		}
 		pass := req.json_string('pass') or { 
-			return json(200, '{"error":"pass is required"}')
+			return return_error(1, "pass is required")
+		}
+
+		if name != "jwt" {
+			return return_error(1, "name is error")
+		}
+		if pass != "123" {
+			return return_error(1, "pass is error")
 		}
 
 		token := create_token(name) or {
-			return json(200, '{"error":"create_token is error"}')
+			return return_error(1, "create_token is error")
 		}
 
-		mut data := map[string]string{}
-		data["name"] = name
-		data["pass"] = pass
-		data["token"] = token
+		mut data := map[string]json2.Any{}
+		data["token"] = json2.Any(token)
 
-		json_data := json2.encode(data)
-
-		return json(200, json_data)
+		return return_success("ok", data)
 	})
 
 	// > curl -X POST -H "X-JWT: token" 127.0.0.1:9000/user/profile
@@ -58,7 +61,11 @@ fn main() {
 
         m.post('/profile', fn (req viltrum.Request) viltrum.Response {
 			user_id := req.headers.get_or('user_id', '')
-            return viltrum.json(200, '{"uid":"${user_id}"}')
+
+			mut data := map[string]json2.Any{}
+			data["uid"] = json2.Any(user_id)
+
+			return return_success("ok", data)
         })
     })
 
@@ -69,20 +76,20 @@ fn jwt_auth(next viltrum.Handler) viltrum.Handler {
 	return fn [next] (req viltrum.Request) viltrum.Response {
 		header_value := req.headers.get_or('Authorization', '')
 		if header_value.len == 0 {
-			return json(200, '{"error":"authorizationh is required"}')
+			return return_error(1, "authorizationh is required")
 		}
 
 		if header_value.starts_with('Bearer ') == false {
-			return json(200, '{"error":"token is required"}')
+			return return_error(1, "token is required")
 		}
 
 		token := header_value[7..].trim_space()
 		if token.len == 0 {
-			return json(200, '{"error":"Invalid token format"}')
+			return return_error(1, "Invalid token format")
 		}
 
 		user_id := parse_token(token) or {
-			return json(200, '{"error":"${err.msg()}"}')
+			return return_error(1, err.msg())
 		}
 
 		req.headers.set("user_id", user_id)
@@ -91,5 +98,35 @@ fn jwt_auth(next viltrum.Handler) viltrum.Handler {
 
 		return resp
 	}
+}
+
+pub struct JsonData {
+pub:
+	code int @[json: 'code']
+	message string @[json: 'message']
+	data ?map[string]json2.Any @[json: 'data'; omitempty]
+}
+
+fn return_error(code int, message string) viltrum.Response {
+	mut res := JsonData{
+		code: code
+		message: message
+	}
+
+	json_data := json2.encode(res)
+
+	return json(200, json_data)
+}
+
+fn return_success(message string, data map[string]json2.Any) viltrum.Response {
+	mut res := JsonData{
+		code: 0
+		message: message
+		data: data
+	}
+
+	json_data := json2.encode(res)
+
+	return json(200, json_data)
 }
 
