@@ -58,7 +58,7 @@ pub fn parse_token(token_string string) !string {
 		return error("token expired")
 	}
     
-	claims := parsed.get_claimss_t[JwtClaims]() or {
+	claims := parsed.get_claims_t[JwtClaims]() or {
 		return error("token user_id fail")
 	}
 	return claims.user_id
