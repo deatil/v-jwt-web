@@ -5,11 +5,13 @@ import tuntii.viltrum {
 	json
 }
 
+pub type JsonAny = json2.Any
+
 pub struct JsonData {
 pub:
 	code int @[json: 'code']
 	message string @[json: 'message']
-	data ?map[string]json2.Any @[json: 'data'; omitempty]
+	data ?JsonAny @[json: 'data'; omitempty]
 }
 
 fn return_error(code int, message string) viltrum.Response {
@@ -23,7 +25,7 @@ fn return_error(code int, message string) viltrum.Response {
 	return json(200, json_data)
 }
 
-fn return_success(message string, data map[string]json2.Any) viltrum.Response {
+fn return_success(message string, data JsonAny) viltrum.Response {
 	mut res := JsonData{
 		code: 0
 		message: message

@@ -1,7 +1,6 @@
 module main
 
 import x.json2
-
 import tuntii.viltrum {
 	new
 	recover
@@ -17,13 +16,19 @@ fn main() {
 	app.use(recover)
 	app.use(cors('*'))
 
+	// > curl -X GET 127.0.0.1:9000/
 	app.get('/', fn (req Request) Response {
 		return text(200, 'v-jwt\n')
 	})
 
+	// > curl -X GET 127.0.0.1:9000/hi/x-jwt
 	app.get('/hi/:name', fn (req Request) Response {
 		name := req.param('name') or { 'world' }
-		return json(200, '{"hi":"${name}"}')
+
+		mut data := map[string]json2.Any{}
+		data["hi"] = json2.Any(name)
+
+		return return_success("ok", json2.Any(data))
 	})
 
 	// > curl -X POST -H "Content-Type: application/json" -d '{"name":"jwt","pass":"123"}' 127.0.0.1:9000/login
@@ -53,7 +58,7 @@ fn main() {
 		data["token"] = json2.Any(token)
 		data["more"] = json2.Any(more)
 
-		return return_success("ok", data)
+		return return_success("ok", json2.Any(data))
 	})
 
 	// > curl -X POST -H "Content-Type: application/x-wwww-form-urlencoded" -d "name=jwt&pass=123" 127.0.0.1:9000/login2
@@ -79,23 +84,23 @@ fn main() {
 		mut data := map[string]json2.Any{}
 		data["token"] = json2.Any(token)
 
-		return return_success("ok", data)
+		return return_success("ok", json2.Any(data))
 	})
 
-	// > curl -X POST -H "X-JWT: token" 127.0.0.1:9000/user/profile
-	// > curl -X POST -H "Authorization: token" 127.0.0.1:9000/user/profile
-	// > curl -X POST -H "Authorization: Bearer token" 127.0.0.1:9000/user/profile
-	// > curl -X POST -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJleGFtcGxlLmNvbSIsImV4cCI6MTc4OTEzNzI5NiwiaWF0IjoxNzg2NTQ1Mjk2LCJ1aWQiOiJqd3QifQ.0aRoPqvqacmsabjHnkuKQdKjcAfXhvHu3DRa8ypz8Jo" 127.0.0.1:9000/user/profile
     app.mount('/user', fn (mut m viltrum.Mount) {
 		m.use(jwt_auth)
 
+		// > curl -X POST -H "X-JWT: token" 127.0.0.1:9000/user/profile
+		// > curl -X POST -H "Authorization: token" 127.0.0.1:9000/user/profile
+		// > curl -X POST -H "Authorization: Bearer token" 127.0.0.1:9000/user/profile
+		// > curl -X POST -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJleGFtcGxlLmNvbSIsImV4cCI6MTc4OTEzNzI5NiwiaWF0IjoxNzg2NTQ1Mjk2LCJ1aWQiOiJqd3QifQ.0aRoPqvqacmsabjHnkuKQdKjcAfXhvHu3DRa8ypz8Jo" 127.0.0.1:9000/user/profile
         m.post('/profile', fn (req viltrum.Request) viltrum.Response {
 			user_id := req.headers.get_or('user_id', '')
 
 			mut data := map[string]json2.Any{}
 			data["uid"] = json2.Any(user_id)
 
-			return return_success("ok", data)
+			return return_success("ok", json2.Any(data))
         })
     })
 
