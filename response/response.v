@@ -1,4 +1,4 @@
-module main
+module response
 
 import x.json2
 import tuntii.viltrum {
@@ -14,7 +14,7 @@ pub:
 	data ?JsonAny @[json: 'data'; omitempty]
 }
 
-fn return_error(code int, message string) viltrum.Response {
+pub fn return_error(code int, message string) viltrum.Response {
 	mut res := JsonData{
 		code: code
 		message: message
@@ -25,7 +25,7 @@ fn return_error(code int, message string) viltrum.Response {
 	return json(200, json_data)
 }
 
-fn return_success(message string, data JsonAny) viltrum.Response {
+pub fn return_success(message string, data JsonAny) viltrum.Response {
 	mut res := JsonData{
 		code: 0
 		message: message

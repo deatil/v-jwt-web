@@ -1,7 +1,7 @@
-module main
+module jwt
 
 import time
-import deatil.vjwt.jwt
+import deatil.vjwt.jwt as vjwt
 
 pub struct Conf {
 pub:
@@ -35,19 +35,19 @@ pub fn create_token(user_id string) !string {
 		user_id: user_id
 	}
 
-	mut s := jwt.signing_method_hs256
+	mut s := vjwt.signing_method_hs256.new()
 	token_string := s.sign[JwtClaims](claims, conf.jwt_key.bytes())!
 
 	return token_string
 }
 
 pub fn parse_token(token_string string) !string {
-	mut p := jwt.signing_method_hs256
+	mut p := vjwt.signing_method_hs256.new()
 	parsed := p.parse(token_string, conf.jwt_key.bytes()) or { 
 		return error("token parse fail")
 	}
 
-	validator := jwt.Validator.new(parsed)
+	validator := vjwt.Validator.new(parsed)
 
 	if validator.is_permitted_for([conf.jwt_aud]) != true {
 		return error("token aud fail")

@@ -11,7 +11,7 @@ A v-jwt middleware web.
 ### Dependency
 
  - Tuntii.Viltrum >= 0.9.0
- - deatil.vjwt >= 0.0.12
+ - deatil.vjwt >= 0.1.0
 
 
 ### Run 

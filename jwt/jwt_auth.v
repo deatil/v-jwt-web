@@ -1,8 +1,11 @@
-module main
+module jwt
 
 import tuntii.viltrum
+import response {
+	return_error
+}
 
-fn jwt_auth(next viltrum.Handler) viltrum.Handler {
+pub fn jwt_auth(next viltrum.Handler) viltrum.Handler {
 	return fn [next] (req viltrum.Request) viltrum.Response {
 		header_value := req.headers.get_or('Authorization', '')
 		if header_value.len == 0 {

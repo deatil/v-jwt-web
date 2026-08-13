@@ -11,6 +11,12 @@ import tuntii.viltrum {
 	Response
 }
 
+import jwt
+import response {
+	return_error
+	return_success
+}
+
 fn main() {
 	mut app := new()
 	app.use(recover)
@@ -21,7 +27,7 @@ fn main() {
 		return text(200, 'v-jwt\n')
 	})
 
-	// > curl -X GET 127.0.0.1:9000/hi/x-jwt
+	// > curl -X GET 127.0.0.1:9000/hi/v-jwt
 	app.get('/hi/:name', fn (req Request) Response {
 		name := req.param('name') or { 'world' }
 
@@ -47,7 +53,7 @@ fn main() {
 			return return_error(1, "pass is error")
 		}
 
-		token := create_token(name) or {
+		token := jwt.create_token(name) or {
 			return return_error(1, "create_token is error")
 		}
 
@@ -77,7 +83,7 @@ fn main() {
 			return return_error(1, "pass is error")
 		}
 
-		token := create_token(name) or {
+		token := jwt.create_token(name) or {
 			return return_error(1, "create_token is error")
 		}
 
@@ -88,7 +94,7 @@ fn main() {
 	})
 
     app.mount('/user', fn (mut m viltrum.Mount) {
-		m.use(jwt_auth)
+		m.use(jwt.jwt_auth)
 
 		// > curl -X POST -H "X-JWT: token" 127.0.0.1:9000/user/profile
 		// > curl -X POST -H "Authorization: token" 127.0.0.1:9000/user/profile
