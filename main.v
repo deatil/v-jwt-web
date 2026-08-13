@@ -56,6 +56,32 @@ fn main() {
 		return return_success("ok", data)
 	})
 
+	// > curl -X POST -H "Content-Type: application/x-wwww-form-urlencoded" -d "name=jwt&pass=123" 127.0.0.1:9000/login2
+	app.post('/login2', fn (req Request) Response {
+		name := req.form_value('name') or { 
+			return return_error(1, "name is required")
+		}
+		pass := req.form_value('pass') or { 
+			return return_error(1, "pass is required")
+		}
+
+		if name != "jwt" {
+			return return_error(1, "name is error")
+		}
+		if pass != "123" {
+			return return_error(1, "pass is error")
+		}
+
+		token := create_token(name) or {
+			return return_error(1, "create_token is error")
+		}
+
+		mut data := map[string]json2.Any{}
+		data["token"] = json2.Any(token)
+
+		return return_success("ok", data)
+	})
+
 	// > curl -X POST -H "X-JWT: token" 127.0.0.1:9000/user/profile
 	// > curl -X POST -H "Authorization: token" 127.0.0.1:9000/user/profile
 	// > curl -X POST -H "Authorization: Bearer token" 127.0.0.1:9000/user/profile

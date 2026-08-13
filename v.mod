@@ -4,7 +4,7 @@ Module {
 	version: '0.0.3'
 	license: 'apache2'
 	dependencies: [
-		"tuntii.viltrum",
+		"Tuntii.Viltrum",
 		"deatil.vjwt"
 	]
 }
