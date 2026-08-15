@@ -96,11 +96,11 @@ fn main() {
     app.mount('/user', fn (mut m viltrum.Mount) {
 		m.use(jwt.jwt_auth)
 
-		// > curl -X POST -H "X-JWT: token" 127.0.0.1:9000/user/profile
-		// > curl -X POST -H "Authorization: token" 127.0.0.1:9000/user/profile
-		// > curl -X POST -H "Authorization: Bearer token" 127.0.0.1:9000/user/profile
-		// > curl -X POST -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJleGFtcGxlLmNvbSIsImV4cCI6MTc4OTEzNzI5NiwiaWF0IjoxNzg2NTQ1Mjk2LCJ1aWQiOiJqd3QifQ.0aRoPqvqacmsabjHnkuKQdKjcAfXhvHu3DRa8ypz8Jo" 127.0.0.1:9000/user/profile
-        m.post('/profile', fn (req viltrum.Request) viltrum.Response {
+		// > curl -X GET -H "X-JWT: token" 127.0.0.1:9000/user/profile
+		// > curl -X GET -H "Authorization: token" 127.0.0.1:9000/user/profile
+		// > curl -X GET -H "Authorization: Bearer token" 127.0.0.1:9000/user/profile
+		// > curl -X GET -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJleGFtcGxlLmNvbSIsImV4cCI6MTc4OTEzNzI5NiwiaWF0IjoxNzg2NTQ1Mjk2LCJ1aWQiOiJqd3QifQ.0aRoPqvqacmsabjHnkuKQdKjcAfXhvHu3DRa8ypz8Jo" 127.0.0.1:9000/user/profile
+        m.get('/profile', fn (req viltrum.Request) viltrum.Response {
 			user_id := req.headers.get_or('user_id', '')
 
 			mut data := map[string]json2.Any{}
